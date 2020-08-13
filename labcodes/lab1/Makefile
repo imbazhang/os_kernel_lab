@@ -4,7 +4,7 @@ SPACE	:= $(EMPTY) $(EMPTY)
 SLASH	:= /
 
 V       := @
-#need llvm/cang-3.5+
+#need llvm/clang-3.5+
 #USELLVM := 1
 # try to infer the correct GCCPREFX
 ifndef GCCPREFIX
