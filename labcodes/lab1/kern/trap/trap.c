@@ -47,14 +47,14 @@ idt_init(void) {
       *     Notice: the argument of lidt is idt_pd. try to find it!
       */
     extern uintptr_t __vectors[];
-    uint32_t kcs = GD_KTEXT; // kernel OS code segment selector
-    for (int i = 0; i < 256; ++ i) {
-        if (i == T_SYSCALL) {
-            SETGATE(idt[i], 1, kcs, __vectors[i], DPL_USER);
-        } else {
-            SETGATE(idt[i], 0, kcs, __vectors[i], DPL_KERNEL);
-        }
+    int i;
+    for (i = 0; i < sizeof(idt) / sizeof(struct gatedesc); i ++) {
+        SETGATE(idt[i], 0, GD_KTEXT, __vectors[i], DPL_KERNEL);
     }
+    // set for switch from user to kernel
+    SETGATE(idt[T_SWITCH_TOK], 0, GD_KTEXT, __vectors[T_SWITCH_TOK], DPL_USER);
+    // load the IDT
+    lidt(&idt_pd);
 }
 
 static const char *
