@@ -46,22 +46,15 @@ idt_init(void) {
       *     You don't know the meaning of this instruction? just google it! and check the libs/x86.h to know more.
       *     Notice: the argument of lidt is idt_pd. try to find it!
       */
-
     extern uintptr_t __vectors[];
-    for (int i = 0; i < 256; ++i) {
-        int dpl = DPL_KERNEL;
-        if (i == T_SYSCALL || i == T_SWITCH_TOK) {
-            dpl = DPL_USER;
-        }
-        int istrap = 0;
+    uint32_t kcs = GD_KTEXT; // kernel OS code segment selector
+    for (int i = 0; i < 256; ++ i) {
         if (i == T_SYSCALL) {
-            istrap = 1;
+            SETGATE(idt[i], 1, kcs, __vectors[i], DPL_USER);
+        } else {
+            SETGATE(idt[i], 0, kcs, __vectors[i], DPL_KERNEL);
         }
-        SETGATE(idt[i], istrap, KERNEL_CS, __vectors[i], dpl);
     }
-    asm volatile ("lidt %0"
-    :
-    : "m"(idt_pd));
 }
 
 static const char *
