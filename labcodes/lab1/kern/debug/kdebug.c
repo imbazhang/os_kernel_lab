@@ -303,14 +303,14 @@ print_stackframe(void) {
       *                   the calling funciton's ebp = ss:[ebp]
       */
     uint32_t ebp = read_ebp();
-    uint32_t ra = read_eip();
-    for (int i = 0; i < STACKFRAME_DEPTH && ebp != 0; ++ i) {
-        cprintf("ebp:0x%08x eip:0x%08x ", ebp, ra);
-        uint32_t* ptr = (uint32_t *) (ebp + 8);
-        cprintf("args:0x%08x 0x%08x 0x%08x 0x%08x\n", ptr[0], ptr[1], ptr[2], ptr[3]);
-        print_debuginfo(ra - 1);
-        ra = *((uint32_t *) (ebp + 4));
-        ebp = *((uint32_t *) ebp);
+    uint32_t eip = read_eip();
+    for (int i = 0; ebp && i < STACKFRAME_DEPTH; ++i) {
+        cprintf("ebp:0x%08x eip:0x%08x args:0x%08x 0x%08x 0x%08x 0x%08x\n", ebp, eip,
+                ((uint32_t *)ebp)[2], ((uint32_t *)ebp)[3],
+        ((uint32_t *)ebp)[4], ((uint32_t *)ebp)[5]);
+        print_debuginfo(eip - 1);
+        eip = ((uint32_t *)ebp)[1];
+        ebp = ((uint32_t *)ebp)[0];
     }
 }
 
