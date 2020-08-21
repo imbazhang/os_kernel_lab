@@ -32,7 +32,7 @@ static struct pseudodesc idt_pd = {
 };
 
 /* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S */
-vvoid
+void
 idt_init(void) {
     /* LAB1 YOUR CODE : STEP 2 */
     /* (1) Where are the entry addrs of each Interrupt Service Routine (ISR)?
