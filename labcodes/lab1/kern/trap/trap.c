@@ -27,8 +27,6 @@ static void print_ticks() {
  * */
 static struct gatedesc idt[256] = {{0}};
 
-static uint32_t clock_count = 0;
-
 static struct pseudodesc idt_pd = {
     sizeof(idt) - 1, (uintptr_t)idt
 };
@@ -158,11 +156,9 @@ trap_dispatch(struct trapframe *tf) {
          * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
          * (3) Too Simple? Yes, I think so!
          */
-        clock_count ++;
-            if (clock_count == TICK_NUM) {
-                clock_count = 0;
+        ticks ++;
+            if (ticks % TICK_NUM == 0) {
                 print_ticks();
-                //print_trapframe(tf);
             }
             break;
     case IRQ_OFFSET + IRQ_COM1:
