@@ -158,7 +158,7 @@ merge_backward(struct Page* base) {
     p -> property = 0;
     list_del(le);
 
-    return true;
+    return 1;
 }
 
 static void
